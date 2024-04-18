@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import recipeRoutes from './routes/recipes.js'
+import cors from 'cors'
 
 const app = express();
 const PORT = 5000;
@@ -17,6 +18,11 @@ mongoose.connect(CONNECTION_URL)
     console.log(err)
   });
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use('/recipes', recipeRoutes)
