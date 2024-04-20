@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate, useParams } from "react-router-dom";
 import { getRecipe, updateRecipe } from "@/api/recipes";
+import { RECIPES } from "@/router/urls";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -45,7 +46,7 @@ function UpdateRecipe() {
         try {
             const res = await updateRecipe(id, data)
             toast.success(res.data.message)
-            navigate('/recipes')
+            navigate(RECIPES)
         } catch (error) {
             console.error(error)
             toast.error('something went wrong')

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card"
 import { Link } from "react-router-dom"
 import { getRecipes } from "@/api/recipes"
+import { RECIPES } from "@/router/urls"
 
 function Recipes() {
     const [recipes, setRecipes] = useState([])
@@ -30,7 +31,7 @@ function Recipes() {
                     </CardDescription>
                 </CardHeader>
                 <CardFooter>
-                    <Link to={'/recipes/' + recipe._id}>details</Link>
+                    <Link to={RECIPES + recipe._id}>details</Link>
                 </CardFooter>
             </Card>
         );

@@ -1,5 +1,6 @@
 import { deleteRecipe, getRecipe } from "@/api/recipes";
 import { Button } from "@/components/ui/button";
+import { RECIPES, UPDATE_RECIPE } from "@/router/urls";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -29,7 +30,7 @@ function Recipe() {
         try {
             const res = await deleteRecipe(id)
             toast.success(res.data.message)
-            navigate('/recipes')
+            navigate(RECIPES)
         } catch (error) {
             console.error(error)
         }
@@ -41,7 +42,7 @@ function Recipe() {
                 recipe ?
                     <div>
                         <Button variant='destructive' onClick={() => { removeRecipe(recipe._id) }}>delete</Button>
-                        <Link to={'/update-recipe/' + id}>update</Link>
+                        <Link to={UPDATE_RECIPE + id}>update</Link>
                         <h2 className="font-bold text-xl capitalize">{recipe.title}</h2>
                         <p>
                             {recipe.description}

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { createRecipe } from "@/api/recipes";
 import { useNavigate } from "react-router-dom";
+import { RECIPES } from "@/router/urls";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -48,7 +49,7 @@ function CreateRecipe() {
             console.log(res)
             toast.success('recipe created successfully')
             reset()
-            navigate('/recipes')
+            navigate(RECIPES)
         } catch (error) {
             console.error(error)
             toast.error('something went wrong')
