@@ -1,7 +1,7 @@
+import { deleteRecipe, getRecipe } from "@/api/recipes";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 function Recipe() {
@@ -10,10 +10,10 @@ function Recipe() {
     const [isFetching, setIsFetching] = useState(false)
     const navigate = useNavigate()
 
-    const getRecipe = async () => {
+    const fetchRecipe = async () => {
         try {
             setIsFetching(true)
-            const res = await axios.get('http://localhost:5000/recipes/' + id)
+            const res = await getRecipe(id)
             setRecipe(res.data)
         } catch (error) {
             console.error(error)
@@ -22,12 +22,12 @@ function Recipe() {
         }
     }
     useEffect(() => {
-        getRecipe()
+        fetchRecipe()
     }, [])
 
-    const deleteRecipe = async (id) => {
+    const removeRecipe = async (id) => {
         try {
-            const res = await axios.delete('http://localhost:5000/recipes/' + id)
+            const res = await deleteRecipe(id)
             toast.success(res.data.message)
             navigate('/recipes')
         } catch (error) {
@@ -40,7 +40,8 @@ function Recipe() {
             {
                 recipe ?
                     <div>
-                        <Button variant='destructive' onClick={() => { deleteRecipe(recipe._id) }}>delete</Button>
+                        <Button variant='destructive' onClick={() => { removeRecipe(recipe._id) }}>delete</Button>
+                        <Link to={'/update-recipe/' + id}>update</Link>
                         <h2 className="font-bold text-xl capitalize">{recipe.title}</h2>
                         <p>
                             {recipe.description}

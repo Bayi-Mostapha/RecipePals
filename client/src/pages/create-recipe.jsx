@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
+import { createRecipe } from "@/api/recipes";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -25,6 +26,7 @@ const schema = yup.object().shape({
 });
 
 function CreateRecipe() {
+    const navigate = useNavigate()
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -34,7 +36,7 @@ function CreateRecipe() {
             instructions: '',
         }
     });
-    const { formState, handleSubmit, control } = form;
+    const { formState, handleSubmit, control, reset } = form;
     const { isSubmitting, isValid } = formState;
 
     const submit = async (data) => {
@@ -42,8 +44,11 @@ function CreateRecipe() {
         let arr = str.split(",").map(item => item.trim());
         data = { ...data, ingredients: arr }
         try {
-            const res = await axios.post('http://127.0.0.1:5000/recipes/', data)
+            const res = await createRecipe(data)
+            console.log(res)
             toast.success('recipe created successfully')
+            reset()
+            navigate('/recipes')
         } catch (error) {
             console.error(error)
             toast.error('something went wrong')

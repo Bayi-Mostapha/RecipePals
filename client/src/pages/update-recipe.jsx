@@ -15,9 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getRecipe, updateRecipe } from "@/api/recipes";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -28,37 +27,25 @@ const schema = yup.object().shape({
 
 function UpdateRecipe() {
     const { id } = useParams()
+    const navigate = useNavigate()
     const form = useForm({
         resolver: yupResolver(schema),
-        defaultValues: {
-            title: '',
-            description: '',
-            ingredients: '',
-            instructions: '',
+        defaultValues: async () => {
+            const res = await getRecipe(id);
+            return { ...res.data, ingredients: res.data.ingredients.join(',') }
         }
     });
     const { formState, handleSubmit, control } = form;
-    const { isSubmitting, isValid } = formState;
-
-    const getData = async () => {
-        const res = await axios.get('http://127.0.0.1:5000/recipes/' + id);
-        const data = { ...res.data, ingredients: res.data.ingredients.join(',') }
-        form.setValue('title', data.title)
-        form.setValue('description', data.description)
-        form.setValue('ingredients', data.ingredients)
-        form.setValue('instructions', data.instructions)
-    }
-    useEffect(() => {
-        getData()
-    }, [])
+    const { isSubmitting, isDirty } = formState;
 
     const submit = async (data) => {
         let str = data.ingredients;
         let arr = str.split(",").map(item => item.trim());
         data = { ...data, ingredients: arr }
         try {
-            await axios.put('http://127.0.0.1:5000/recipes/' + id, data)
-            toast.success('recipe updated successfully')
+            const res = await updateRecipe(id, data)
+            toast.success(res.data.message)
+            navigate('/recipes')
         } catch (error) {
             console.error(error)
             toast.error('something went wrong')
@@ -124,9 +111,9 @@ function UpdateRecipe() {
                             </FormItem>
                         )}
                     />
-                    <Button disabled={!isValid || isSubmitting} type="submit">Submit</Button>
+                    <Button disabled={!isDirty || isSubmitting} type="submit">Submit</Button>
                 </form>
-            </Form>
+            </Form >
         </>
     );
 }

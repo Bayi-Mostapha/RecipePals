@@ -1,29 +1,28 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import {
     Card,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Link } from "react-router-dom"
+import { getRecipes } from "@/api/recipes"
 
 function Recipes() {
     const [recipes, setRecipes] = useState([])
 
-    const getRecipes = async () => {
-        const res = await axios.get('http://localhost:5000/recipes')
+    const fetchRecipes = async () => {
+        const res = await getRecipes()
         setRecipes(res.data)
     }
     useEffect(() => {
-        getRecipes()
+        fetchRecipes()
     }, [])
 
     const displayRecipes = () => {
         return recipes.map(recipe =>
-            <Card>
+            <Card key={recipe._id}>
                 <CardHeader>
                     <CardTitle className="capitalize">{recipe.title}</CardTitle>
                     <CardDescription>
