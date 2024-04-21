@@ -52,6 +52,12 @@ function UpdateRecipe() {
                     return { data: recipe };
 
                 return undefined;
+            },
+            onSuccess: (data) => {
+                reset({
+                    ...data.data,
+                    ingredients: data.data.ingredients.join(',')
+                })
             }
         }
     );
@@ -63,7 +69,7 @@ function UpdateRecipe() {
             ingredients: recipeQuery?.data?.ingredients?.join(',')
         }
     });
-    const { formState, handleSubmit, control } = form;
+    const { formState, handleSubmit, control, reset } = form;
     const { isSubmitting, isDirty, isValid } = formState;
     const recipeUpdateMutation = useMutation(variables => {
         return updateRecipe(variables.id, variables.data)
@@ -85,10 +91,10 @@ function UpdateRecipe() {
         recipeUpdateMutation.mutate({ id, data })
     }
 
-    if (isLoading || !recipeQuery?.data) {
+    if (isLoading) {
         return (
             <div>
-                loading...
+                Loading...
             </div>
         )
     }
