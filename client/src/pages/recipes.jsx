@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import {
     Card,
     CardDescription,
@@ -9,20 +8,23 @@ import {
 import { Link } from "react-router-dom"
 import { getRecipes } from "@/api/recipes"
 import { RECIPES } from "@/router/urls"
+import { useQuery } from "react-query"
+import { Button } from "@/components/ui/button"
 
 function Recipes() {
-    const [recipes, setRecipes] = useState([])
-
-    const fetchRecipes = async () => {
-        const res = await getRecipes()
-        setRecipes(res.data)
-    }
-    useEffect(() => {
-        fetchRecipes()
-    }, [])
+    const { data, error, isLoading } = useQuery(
+        ['recipes'],
+        getRecipes,
+        {
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            retry: 3,
+            refetchInterval: 10 * 60 * 1000
+        }
+    )
 
     const displayRecipes = () => {
-        return recipes.map(recipe =>
+        return data?.data.map(recipe =>
             <Card key={recipe._id}>
                 <CardHeader>
                     <CardTitle className="capitalize">{recipe.title}</CardTitle>
@@ -36,6 +38,25 @@ function Recipes() {
             </Card>
         );
     }
+
+    if (isLoading) {
+        return (
+            <div>
+                loading...
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div>
+                <h3>Something went wrong</h3>
+                <p>please refresh the page</p>
+                <Button onClick={() => { window.location.reload() }}>refresh</Button>
+            </div>
+        )
+    }
+
     return (
         <div className="grid grid-cols-4 gap-2">
             {displayRecipes()}

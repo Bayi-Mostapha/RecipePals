@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createRecipe } from "@/api/recipes";
 import { useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
+import { useMutation, useQueryClient } from "react-query";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -28,6 +29,7 @@ const schema = yup.object().shape({
 
 function CreateRecipe() {
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -40,20 +42,25 @@ function CreateRecipe() {
     const { formState, handleSubmit, control, reset } = form;
     const { isSubmitting, isValid } = formState;
 
+    const recipeCreateMutation = useMutation(variables => {
+        return createRecipe(variables.data)
+    }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['recipes'])
+            toast.success('recipe created successfully')
+            reset()
+            navigate(RECIPES)
+        },
+        onError: (error) => {
+            console.error(error)
+            toast.error('something went wrong')
+        }
+    })
     const submit = async (data) => {
         let str = data.ingredients;
         let arr = str.split(",").map(item => item.trim());
         data = { ...data, ingredients: arr }
-        try {
-            const res = await createRecipe(data)
-            console.log(res)
-            toast.success('recipe created successfully')
-            reset()
-            navigate(RECIPES)
-        } catch (error) {
-            console.error(error)
-            toast.error('something went wrong')
-        }
+        recipeCreateMutation.mutate({ data })
     }
 
     return (
