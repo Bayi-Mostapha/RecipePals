@@ -16,6 +16,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
+import axiosClient from "@/api/axios";
+import { useContext } from "react";
+import { authContext } from "@/contexts/auth-wrapper";
 
 const schema = yup.object().shape({
     email: yup.string().email().required(),
@@ -23,6 +26,7 @@ const schema = yup.object().shape({
 });
 
 function Login() {
+    const { setUser } = useContext(authContext)
     const navigate = useNavigate()
     const form = useForm({
         resolver: yupResolver(schema),
@@ -31,11 +35,20 @@ function Login() {
             password: '',
         }
     });
-    const { formState, handleSubmit, control, reset } = form;
+    const { formState, handleSubmit, control } = form;
     const { isSubmitting, isValid } = formState;
 
     const submit = async (data) => {
-
+        try {
+            const res = await axiosClient.post('/user/login', data)
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('user', JSON.stringify(res.data.user))
+            setUser(res.data.user)
+            navigate(RECIPES)
+        } catch (error) {
+            toast.error(error.response.data.message)
+            console.log(error)
+        }
     }
 
     return (
@@ -68,7 +81,7 @@ function Login() {
                             </FormItem>
                         )}
                     />
-                    <Button disabled={!isValid || isSubmitting} type="submit">Signup</Button>
+                    <Button disabled={!isValid || isSubmitting} type="submit">Login</Button>
                 </form>
             </Form>
         </>

@@ -28,6 +28,9 @@ export const getRecipe = async (req, res) => {
 };
 
 export const createRecipe = async (req, res) => {
+    if (!req.userId) {
+        return res.status(401).json({ message: 'unauthenticated' })
+    }
     const userRecipe = req.body
     try {
         const recipe = new Recipe(userRecipe);

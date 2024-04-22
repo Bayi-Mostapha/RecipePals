@@ -16,9 +16,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
+import axiosClient from "@/api/axios";
 
 const schema = yup.object().shape({
-    fullName: yup.string().required(),
+    fullname: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().min(8).required(),
 });
@@ -28,16 +29,23 @@ function Signup() {
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-            fullName: '',
+            fullname: '',
             email: '',
             password: '',
         }
     });
-    const { formState, handleSubmit, control, reset } = form;
+    const { formState, handleSubmit, control } = form;
     const { isSubmitting, isValid } = formState;
 
     const submit = async (data) => {
-
+        try {
+            const res = await axiosClient.post('/user/signup', data)
+            toast.success(res.data.message)
+            navigate(RECIPES)
+        } catch (error) {
+            toast.error(error.response.data.message)
+            console.log(error)
+        }
     }
 
     return (
