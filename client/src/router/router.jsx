@@ -3,14 +3,23 @@ import Recipes from "../pages/recipes";
 import Recipe from "../pages/recipe";
 import CreateRecipe from "../pages/create-recipe";
 import UpdateRecipe from "../pages/update-recipe";
-import { CREATE_RECIPE, RECIPES, UPDATE_RECIPE } from "./urls";
+import { CREATE_RECIPE, LOGIN, RECIPES, SIGNUP, UPDATE_RECIPE } from "./urls";
 import MainLayout from "@/layouts/main-layout";
+import Signup from "@/pages/auth/signup";
+import Login from "@/pages/auth/login";
 
 export const router = createBrowserRouter([
     {
         element: <MainLayout />,
         children: [
-
+            {
+                path: SIGNUP,
+                element: <Signup />
+            },
+            {
+                path: LOGIN,
+                element: <Login />
+            },
             {
                 path: RECIPES,
                 element: <Recipes />

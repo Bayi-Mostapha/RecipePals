@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { LOGIN, SIGNUP } from "@/router/urls";
 import { Link } from "react-router-dom";
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
@@ -17,8 +18,8 @@ function NavBar() {
                 </div>
             ) : (
                 <div>
-                    <Link to={''}>Sign Up</Link>
-                    <Link to={''}>Login</Link>
+                    <Link to={SIGNUP}>Sign Up</Link>
+                    <Link to={LOGIN}>Login</Link>
                 </div>
             )}
         </nav>
