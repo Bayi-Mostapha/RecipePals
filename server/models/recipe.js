@@ -14,6 +14,11 @@ const recipeSchema = mongoose.Schema({
         required: true
     },
     instructions: String,
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', 
+        required: true
+    }
 })
 const Recipe = mongoose.model('Recipe', recipeSchema)
 

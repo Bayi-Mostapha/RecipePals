@@ -79,6 +79,9 @@ function Recipe() {
                 <Link to={UPDATE_RECIPE + id}>update</Link>
                 <h2 className="font-bold text-xl capitalize">{recipe.title}</h2>
                 <p>
+                    {recipe.creator.fullname}
+                </p>
+                <p>
                     {recipe.description}
                 </p>
                 <h4 className="font-semibold text-lg">Ingredients :</h4>

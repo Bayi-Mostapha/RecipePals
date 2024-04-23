@@ -28,9 +28,7 @@ function Recipes() {
             <Card key={recipe._id}>
                 <CardHeader>
                     <CardTitle className="capitalize">{recipe.title}</CardTitle>
-                    <CardDescription>
-                        {recipe.description}
-                    </CardDescription>
+                    <p>By: {recipe.creator.fullname}</p>
                 </CardHeader>
                 <CardFooter>
                     <Link to={RECIPES + recipe._id}>details</Link>

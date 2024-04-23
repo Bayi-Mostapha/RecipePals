@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
 import Recipe from '../models/recipe.js';
+import User from '../models/user.js';
 import { isIdValid } from '../functions/validators.js';
 
 export const getRecipes = async (req, res) => {
     try {
-        const recipes = await Recipe.find();
+        const recipes = await Recipe.find().populate('creator', 'fullname');
         res.status(200).json(recipes);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -17,7 +17,7 @@ export const getRecipe = async (req, res) => {
         if (!isIdValid(id)) {
             return res.status(400).json({ message: 'Invalid recipe ID' });
         }
-        const recipe = await Recipe.findById(id);
+        const recipe = await Recipe.findById(id).populate('creator', 'fullname');
         if (!recipe) {
             return res.status(404).json({ message: 'Recipe not found' });
         }
@@ -31,7 +31,7 @@ export const createRecipe = async (req, res) => {
     if (!req.userId) {
         return res.status(401).json({ message: 'unauthenticated' })
     }
-    const userRecipe = req.body
+    const userRecipe = { ...req.body, creator: req.userId }
     try {
         const recipe = new Recipe(userRecipe);
         recipe.save()
