@@ -8,15 +8,15 @@ import {
 import { Link } from "react-router-dom"
 import { getRecipes } from "@/api/recipes"
 import { RECIPES } from "@/router/urls"
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { Button } from "@/components/ui/button"
 
 function Recipes() {
+    const queryClient = useQueryClient()
     const { data, error, isLoading } = useQuery(
         ['recipes'],
         getRecipes,
         {
-            refetchOnMount: false,
             refetchOnWindowFocus: false,
             retry: 3,
             refetchInterval: 10 * 60 * 1000

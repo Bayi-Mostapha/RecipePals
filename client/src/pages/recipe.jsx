@@ -13,7 +13,6 @@ function Recipe() {
         ['recipe', id],
         () => getRecipe(id),
         {
-            refetchOnMount: false,
             refetchOnWindowFocus: false,
             retry: 3,
             refetchInterval: 10 * 60 * 1000,
@@ -29,18 +28,22 @@ function Recipe() {
 
     const recipeDeleteMutation = useMutation(variables => {
         return deleteRecipe(variables.id)
-    }, {
-        onSuccess: (data, variables) => {
-            queryClient.invalidateQueries(['recipes'], ['recipe', variables.id])
-            queryClient.removeQueries(['recipe', variables.id])
-        }
-    })
+    },
+        {
+            onSuccess: (data, variables) => {
+                queryClient.invalidateQueries(['recipes'])
+                queryClient.removeQueries(['recipe', variables.id])
+                toast.success('recipe deleted successfully')
+                navigate(RECIPES)
+            },
+            onError: (error, variables, context) => {
+                console.error(error)
+                toast.error(error.response.data.message)
+            }
+        })
     const removeRecipe = async (id) => {
         try {
-            // const res = await deleteRecipe(id)
             recipeDeleteMutation.mutate({ id: id })
-            toast.success('recipe deleted successfully')
-            navigate(RECIPES)
         } catch (error) {
             console.error(error)
         }
