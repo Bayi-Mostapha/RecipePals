@@ -1,8 +1,16 @@
 import RotatingImages from '@/components/home/rotating-images';
-import { LOGIN, SIGNUP } from '@/router/urls';
-import { Link } from 'react-router-dom';
+import { authContext } from '@/contexts/auth-wrapper';
+import { LOGIN, RECIPES, SIGNUP } from '@/router/urls';
+import { useContext } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 
 function Home() {
+    const { user } = useContext(authContext);
+
+    if (user) {
+        return <Navigate to={RECIPES} />
+    }
+
     return (
         <>
             <div className='mt-5 flex flex-col-reverse lg:flex-row lg:justify-around items-center gap-5 lg:gap-0'>

@@ -14,9 +14,11 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
 import axiosClient from "@/api/axios";
+import { authContext } from "@/contexts/auth-wrapper";
+import { useContext } from "react";
 
 const schema = yup.object().shape({
     fullname: yup.string().required(),
@@ -25,6 +27,7 @@ const schema = yup.object().shape({
 });
 
 function Signup() {
+    const { user } = useContext(authContext)
     const navigate = useNavigate()
     const form = useForm({
         resolver: yupResolver(schema),
@@ -46,6 +49,10 @@ function Signup() {
             toast.error(error.response.data.message)
             console.log(error)
         }
+    }
+
+    if (user) {
+        return <Navigate to={RECIPES} />
     }
 
     return (

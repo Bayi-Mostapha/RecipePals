@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
 import axiosClient from "@/api/axios";
 import { useContext } from "react";
@@ -26,7 +26,7 @@ const schema = yup.object().shape({
 });
 
 function Login() {
-    const { setUser } = useContext(authContext)
+    const { setUser, user } = useContext(authContext)
     const navigate = useNavigate()
     const form = useForm({
         resolver: yupResolver(schema),
@@ -49,6 +49,10 @@ function Login() {
             toast.error(error.response.data.message)
             console.log(error)
         }
+    }
+
+    if (user) {
+        return <Navigate to={RECIPES} />
     }
 
     return (
