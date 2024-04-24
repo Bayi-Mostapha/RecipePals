@@ -41,9 +41,9 @@ function NavBar() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             ) : (
-                <div>
-                    <Link to={SIGNUP}>Sign Up</Link>
-                    <Link to={LOGIN}>Login</Link>
+                <div className="flex items-center gap-3">
+                    <Link className="block px-3 py-1 border bg-primary-foreground rounded hover:opacity-90 active:opacity-80" to={SIGNUP}>Sign Up</Link>
+                    <Link className="block px-3 py-1 font-medium border bg-primary text-white rounded hover:opacity-90 active:opacity-80" to={LOGIN}>Login</Link>
                 </div>
             )}
         </nav>

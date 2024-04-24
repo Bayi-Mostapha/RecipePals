@@ -69,7 +69,7 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: "PT Sans", sans-serif;
+    font-family: "Rubik", sans-serif;
   }
 
   body {
