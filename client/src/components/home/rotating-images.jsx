@@ -26,7 +26,7 @@ const RotatingImages = ({ className }) => {
             <AnimatePresence>
                 {images.map((src, index) => (
                     <motion.img
-                        className={`w-fit ${currentImage === index ? 'block' : 'hidden'}`}
+                        className={`w-fit object-fill ${currentImage === index ? 'block' : 'hidden'}`}
                         key={index}
                         src={src}
                         alt={`Image ${index + 1}`}

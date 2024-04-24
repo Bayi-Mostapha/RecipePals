@@ -18,7 +18,7 @@ function NavBar() {
     const [open, setOpen] = useState(false);
     const { user, logout } = useContext(authContext)
     return (
-        <nav className="p-3 flex justify-between shadow-sm">
+        <nav className="px-3 py-5 flex items-center justify-between shadow-sm">
             <h1 className="text-primary font-bold text-xl">RecipePals</h1>
             {user ? (
                 <DropdownMenu open={open} onOpenChange={setOpen}>
