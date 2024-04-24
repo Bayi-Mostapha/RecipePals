@@ -14,8 +14,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Navigate, useNavigate } from "react-router-dom";
-import { RECIPES } from "@/router/urls";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { RECIPES, SIGNUP } from "@/router/urls";
 import axiosClient from "@/api/axios";
 import { useContext } from "react";
 import { authContext } from "@/contexts/auth-wrapper";
@@ -56,7 +56,9 @@ function Login() {
     }
 
     return (
-        <>
+        <div className="w-[90%] sm:w-96">
+            <h1 className="text-center text-primary text-3xl font-semibold">RecipePals</h1>
+            <p className="text-center text-sm font-thin">welcome back, we missed you!</p>
             <Form {...form}>
                 <form onSubmit={handleSubmit(submit)}>
                     <FormField
@@ -79,16 +81,17 @@ function Login() {
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input type='password' {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button disabled={!isValid || isSubmitting} type="submit">Login</Button>
+                    <p className="mt-2 text-sm">don't have an account? <Link className="text-primary" to={SIGNUP}>sign up</Link></p>
+                    <Button className="mt-5 ml-auto block" disabled={!isValid || isSubmitting} type="submit">Login</Button>
                 </form>
             </Form>
-        </>
+        </div>
     );
 }
 

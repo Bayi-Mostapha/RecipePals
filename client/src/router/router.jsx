@@ -8,6 +8,7 @@ import MainLayout from "@/layouts/main-layout";
 import Signup from "@/pages/auth/signup";
 import Login from "@/pages/auth/login";
 import Home from "@/pages/home";
+import AuthLayout from "@/layouts/auth-layout";
 
 export const router = createBrowserRouter([
     {
@@ -16,14 +17,6 @@ export const router = createBrowserRouter([
             {
                 path: HOME,
                 element: <Home />
-            },
-            {
-                path: SIGNUP,
-                element: <Signup />
-            },
-            {
-                path: LOGIN,
-                element: <Login />
             },
             {
                 path: RECIPES,
@@ -40,11 +33,24 @@ export const router = createBrowserRouter([
             {
                 path: UPDATE_RECIPE + ':id',
                 element: <UpdateRecipe />
-            },
-            {
-                path: '*',
-                element: <div>404</div>
             }
         ]
+    },
+    {
+        element: <AuthLayout />,
+        children: [
+            {
+                path: SIGNUP,
+                element: <Signup />
+            },
+            {
+                path: LOGIN,
+                element: <Login />
+            },
+        ]
+    },
+    {
+        path: '*',
+        element: <div>404</div>
     }
 ])

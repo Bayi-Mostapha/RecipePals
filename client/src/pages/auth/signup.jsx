@@ -14,8 +14,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Navigate, useNavigate } from "react-router-dom";
-import { RECIPES } from "@/router/urls";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { LOGIN, RECIPES } from "@/router/urls";
 import axiosClient from "@/api/axios";
 import { authContext } from "@/contexts/auth-wrapper";
 import { useContext } from "react";
@@ -56,9 +56,11 @@ function Signup() {
     }
 
     return (
-        <>
+        <div className="w-[90%] sm:w-96">
+            <h1 className="text-center text-primary text-3xl font-semibold">RecipePals</h1>
+            <p className="text-center text-sm font-thin">Create an account and join our platform now!</p>
             <Form {...form}>
-                <form onSubmit={handleSubmit(submit)}>
+                <form className="mt-5" onSubmit={handleSubmit(submit)}>
                     <FormField
                         control={control}
                         name="fullname"
@@ -92,16 +94,17 @@ function Signup() {
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input type='password' {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button disabled={!isValid || isSubmitting} type="submit">Signup</Button>
+                    <p className="mt-2 text-sm">already have an account? <Link className="text-primary" to={LOGIN}>login</Link></p>
+                    <Button className="mt-5 ml-auto block" disabled={!isValid || isSubmitting} type="submit">Sign up</Button>
                 </form>
             </Form>
-        </>
+        </div>
     );
 }
 
