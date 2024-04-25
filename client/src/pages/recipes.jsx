@@ -12,6 +12,9 @@ import { RECIPES } from "@/router/urls"
 import { useQuery, useQueryClient } from "react-query"
 import { Button } from "@/components/ui/button"
 import hero from "/recipes/hero.webp"
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 
 function Recipes() {
     const queryClient = useQueryClient()
@@ -25,23 +28,43 @@ function Recipes() {
         }
     )
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const filteredRecipes = searchQuery === '' ? data?.data : data?.data.filter(recipe => {
+        const titleMatch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const descriptionMatch = recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return titleMatch || descriptionMatch;
+    });
+    const handleSearchInputChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
     const displayRecipes = () => {
-        return data?.data.map(recipe =>
-            <Card key={recipe._id}>
-                <CardHeader>
-                    <CardTitle className="capitalize">{recipe.title}</CardTitle>
-                    <CardDescription>
-                        <p className="font-thin">By: {recipe.creator.fullname}</p>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p>{recipe.description}</p>
-                </CardContent>
-                <CardFooter>
-                    <Link className="underline" to={RECIPES + recipe._id}>details</Link>
-                </CardFooter>
-            </Card>
-        );
+        if (filteredRecipes.length <= 0) {
+            return <div className="h-72 flex justify-center items-center">
+                <p className="w-fit">
+                    no recipes found!
+                </p>
+            </div>
+        }
+        return <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            {
+                filteredRecipes.map(recipe =>
+                    <Card key={recipe._id}>
+                        <CardHeader>
+                            <CardTitle className="capitalize">{recipe.title}</CardTitle>
+                            <CardDescription>
+                                <p className="font-thin">By: {recipe.creator.fullname}</p>
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>{recipe.description}</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Link className="underline" to={RECIPES + recipe._id}>details</Link>
+                        </CardFooter>
+                    </Card>)
+            }
+        </div>
     }
 
     if (isLoading) {
@@ -71,9 +94,18 @@ function Recipes() {
                     <p class="text-white font-thin">Discover, share, and savor delicious recipes from around the world. Get ready to cook up a storm and delight your taste buds!</p>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                {displayRecipes()}
+            <h3 class="mb-1 text-primary text-3xl font-semibold">Recipes</h3>
+            <div className="relative mx-auto w-[80%]">
+                <Search className="absolute top-1/2 left-2 transform -translate-y-1/2 text-gray-500" size={19} />
+                <Input
+                    className="pl-8 mb-3 shadow-sm"
+                    type="text"
+                    placeholder="Search recipes..."
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                />
             </div>
+            {displayRecipes()}
         </>
     );
 }
