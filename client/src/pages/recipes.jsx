@@ -8,16 +8,17 @@ import {
 } from "@/components/ui/card"
 import { Link } from "react-router-dom"
 import { getRecipes } from "@/api/recipes"
-import { RECIPES } from "@/router/urls"
+import { CREATE_RECIPE, RECIPES } from "@/router/urls"
 import { useQuery, useQueryClient } from "react-query"
 import { Button } from "@/components/ui/button"
 import hero from "/recipes/hero.webp"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
+import { authContext } from "@/contexts/auth-wrapper"
 
 function Recipes() {
-    const queryClient = useQueryClient()
+    const { user } = useContext(authContext)
     const { data, error, isLoading } = useQuery(
         ['recipes'],
         getRecipes,
@@ -94,7 +95,13 @@ function Recipes() {
                     <p class="text-white font-thin">Discover, share, and savor delicious recipes from around the world. Get ready to cook up a storm and delight your taste buds!</p>
                 </div>
             </div>
-            <h3 class="mb-1 text-primary text-3xl font-semibold">Recipes</h3>
+            <div className="flex justify-between">
+                <h3 class="mb-1 text-primary text-3xl font-semibold">Recipes</h3>
+                {
+                    user &&
+                    <Link to={CREATE_RECIPE}>create recipe</Link>
+                }
+            </div>
             <div className="relative mx-auto w-[80%]">
                 <Search className="absolute top-1/2 left-2 transform -translate-y-1/2 text-gray-500" size={19} />
                 <Input

@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { getRecipe, updateRecipe } from "@/api/recipes";
 import { RECIPES } from "@/router/urls";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { authContext } from "@/contexts/auth-wrapper";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -30,6 +31,7 @@ const schema = yup.object().shape({
 
 function UpdateRecipe() {
     const { id } = useParams()
+    const { user } = useContext(authContext)
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { data: recipeQuery, error, isLoading } = useQuery(
@@ -112,6 +114,9 @@ function UpdateRecipe() {
             </div>
         )
     }
+    if (!user || recipeQuery.data.creator._id != user._id) {
+        return <Navigate to={RECIPES} />
+    }
     return (
         <>
             {
@@ -173,7 +178,9 @@ function UpdateRecipe() {
                                 </FormItem>
                             )}
                         />
-                        <Button disabled={!isDirty || !isValid || isSubmitting} type="submit">Submit</Button>
+                        <div className="mt-5 flex justify-end">
+                            <Button disabled={!isDirty || !isValid || isSubmitting} type="submit">Submit</Button>
+                        </div>
                     </form>
                 </Form >
             }

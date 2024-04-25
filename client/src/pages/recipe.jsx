@@ -1,12 +1,23 @@
 import { deleteRecipe, getRecipe } from "@/api/recipes";
 import { Button } from "@/components/ui/button";
+import { authContext } from "@/contexts/auth-wrapper";
 import { RECIPES, UPDATE_RECIPE } from "@/router/urls";
+import { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 function Recipe() {
     const { id } = useParams()
+    const { user } = useContext(authContext)
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { data, error, isLoading } = useQuery(
@@ -75,24 +86,44 @@ function Recipe() {
     return (
         <>
             <div>
-                <Button variant='destructive' onClick={() => { removeRecipe(recipe._id) }}>delete</Button>
-                <Link to={UPDATE_RECIPE + id}>update</Link>
-                <h2 className="font-bold text-xl capitalize">{recipe.title}</h2>
-                <p>
-                    {recipe.creator.fullname}
-                </p>
-                <p>
+                {
+                    user && recipe.creator._id == user._id &&
+                    <div className="flex items-center justify-end gap-3">
+                        <Link className="px-4 py-2 border rounded-md shadow-sm hover:bg-primary-foreground transition-all" to={UPDATE_RECIPE + id}>Edit</Link>
+                        <Dialog>
+                            <DialogTrigger
+                                className="px-4 py-2 bg-destructive text-white rounded-md hover:opacity-90 transition-all"
+                            >
+                                Delete
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Are you sure you want to delete this recipe?</DialogTitle>
+                                    <DialogDescription>
+                                        This action cannot be undone. This will permanently delete this recipe
+                                    </DialogDescription>
+                                    <Button variant='destructive' onClick={() => { removeRecipe(recipe._id) }}>Delete</Button>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                }
+                <h2 className="font-semibold text-2xl capitalize">{recipe.title}</h2>
+                <h2 className="text-xs text-gray-500">
+                    By: {recipe.creator.fullname}
+                </h2>
+                <p className="mt-1">
                     {recipe.description}
                 </p>
-                <h4 className="font-semibold text-lg">Ingredients :</h4>
-                <ul>
+                <h4 className="font-medium text-lg mt-5">Ingredients :</h4>
+                <ul className="mb-5">
                     {recipe.ingredients.map((ingredient, i) =>
                         <li key={recipe._id + i} className="text-sm">
                             {ingredient}
                         </li>
                     )}
                 </ul>
-                <h4 className="font-semibold text-lg">Instructions :</h4>
+                <h4 className="font-medium text-lg">Instructions :</h4>
                 <p className="text-sm">{recipe.instructions}</p>
             </div>
         </>

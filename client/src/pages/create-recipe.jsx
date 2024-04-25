@@ -16,9 +16,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { createRecipe } from "@/api/recipes";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RECIPES } from "@/router/urls";
 import { useMutation, useQueryClient } from "react-query";
+import { useContext } from "react";
+import { authContext } from "@/contexts/auth-wrapper";
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -28,6 +30,8 @@ const schema = yup.object().shape({
 });
 
 function CreateRecipe() {
+    const { user } = useContext(authContext)
+
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const form = useForm({
@@ -61,6 +65,10 @@ function CreateRecipe() {
         let arr = str.split(",").map(item => item.trim());
         data = { ...data, ingredients: arr }
         recipeCreateMutation.mutate({ data })
+    }
+
+    if (!user) {
+        return <Navigate to={RECIPES} />
     }
 
     return (
@@ -122,7 +130,9 @@ function CreateRecipe() {
                             </FormItem>
                         )}
                     />
-                    <Button disabled={!isValid || isSubmitting} type="submit">Submit</Button>
+                    <div className="mt-5 flex justify-end">
+                        <Button disabled={!isValid || isSubmitting} type="submit">Submit</Button>
+                    </div>
                 </form>
             </Form>
         </>
