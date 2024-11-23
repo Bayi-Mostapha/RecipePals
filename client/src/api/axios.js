@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: import.meta.env.BACKEND_URL || 'http://localhost:5000/',
+    baseURL: import.meta.env.BACKEND_URL || 'https://recipe-pals-backend.vercel.app/',
 });
 axiosClient.interceptors.request.use((req) => {
     if (localStorage.getItem('token')) {
